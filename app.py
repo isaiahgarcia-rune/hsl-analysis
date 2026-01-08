@@ -328,7 +328,7 @@ with tab2:
         with st.spinner("Fetching data for all dates..."):
             # Collect data for both date ranges
             df1 = collect_daily_error_rates(datetime(2025, 12, 19), datetime(2025, 12, 27))
-            df2 = collect_daily_error_rates(datetime(2026, 1, 6), datetime(2026, 1, 7))
+            df2 = collect_daily_error_rates(datetime(2026, 1, 6), datetime(2026, 1, 8))
             daily_errors_df = pd.concat([df1, df2], ignore_index=True)
 
             # Display summary statistics
