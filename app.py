@@ -19,6 +19,15 @@ class PlotType(Enum):
     ERROR_RATES = 1
 
 
+# Universal plot colors that work on both light and dark backgrounds
+PLOT_COLORS = {
+    "text_color": "#888888",  # Medium gray - visible on both
+    "grid_color": "rgba(128,128,128,0.3)",  # Semi-transparent gray
+    "annotation_bg": "rgba(128,128,128,0.5)",  # Semi-transparent gray
+    "annotation_border": "rgba(128,128,128,0.6)",
+}
+
+
 def get_data_from_ignition(url: str):
     response = requests.get(url)
     return response.json()
@@ -70,7 +79,7 @@ def plot_actual_values(df: pd.DataFrame, date: str, plot_type: PlotType):
         for i, (start, end) in enumerate(zip(curtail_starts, curtail_ends)):
             fig.add_vrect(
                 x0=start, x1=end,
-                fillcolor="#f8f0e3", opacity=0.3,
+                fillcolor="#B8860B", opacity=0.3,
                 layer="below", line_width=0,
                 name="Curtailment" if i == 0 else None,
                 showlegend=(i == 0)
@@ -114,13 +123,13 @@ def plot_actual_values(df: pd.DataFrame, date: str, plot_type: PlotType):
         fig.add_trace(go.Scatter(
             x=df["timestamp"], y=df["LATIMER_MODEL"],
             mode='lines', name='Latimer (Predicted)',
-            line=dict(color='#ffee83', width=1.5),
+            line=dict(color='#D4A000', width=1.5),
             opacity=0.7
         ))
         fig.add_trace(go.Scatter(
             x=df["timestamp"], y=df["RUNE_1_MIN_SEQ_1MIN_STRIDE"],
             mode='lines', name='Rune (Predicted)',
-            line=dict(color='#b1f2ff', width=1.5),
+            line=dict(color='#00B4D8', width=1.5),
             opacity=0.8
         ))
         y_label = "Power Generation (MW)"
@@ -128,13 +137,13 @@ def plot_actual_values(df: pd.DataFrame, date: str, plot_type: PlotType):
         fig.add_trace(go.Scatter(
             x=df["timestamp"], y=df["LATIMER_ERROR"],
             mode='lines', name='Latimer Error Rate',
-            line=dict(color='#ffee83', width=1.5),
+            line=dict(color='#D4A000', width=1.5),
             opacity=0.7
         ))
         fig.add_trace(go.Scatter(
             x=df["timestamp"], y=df["RUNE_1_MIN_SEQ_1MIN_STRIDE_ERROR"],
             mode='lines', name='Rune Error Rate',
-            line=dict(color='#b1f2ff', width=1.5),
+            line=dict(color='#00B4D8', width=1.5),
             opacity=0.8
         ))
         y_label = "Error Rate (%)"
@@ -150,10 +159,10 @@ def plot_actual_values(df: pd.DataFrame, date: str, plot_type: PlotType):
             xref='paper', yref='paper',
             text=stats_text,
             showarrow=False,
-            font=dict(size=12),
+            font=dict(size=12, color=PLOT_COLORS["text_color"]),
             align='left',
-            bgcolor='black',
-            bordercolor='black',
+            bgcolor=PLOT_COLORS["annotation_bg"],
+            bordercolor=PLOT_COLORS["annotation_border"],
             borderwidth=1,
             borderpad=4
         )
@@ -164,7 +173,12 @@ def plot_actual_values(df: pd.DataFrame, date: str, plot_type: PlotType):
         yaxis_title=y_label,
         hovermode='x unified',
         legend=dict(yanchor="top", y=0.99, xanchor="left", x=1.02),
-        height=500
+        height=500,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color=PLOT_COLORS["text_color"]),
+        xaxis=dict(gridcolor=PLOT_COLORS["grid_color"], zerolinecolor=PLOT_COLORS["grid_color"]),
+        yaxis=dict(gridcolor=PLOT_COLORS["grid_color"], zerolinecolor=PLOT_COLORS["grid_color"]),
     )
 
     fig.update_xaxes(tickformat="%I:%M %p")
@@ -202,7 +216,12 @@ def plot_hourly_averages(hourly_avg: pd.DataFrame, date: str):
         yaxis_title="Error Rate",
         hovermode='x unified',
         legend=dict(yanchor="top", y=0.99, xanchor="left", x=1.02),
-        height=500
+        height=500,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color=PLOT_COLORS["text_color"]),
+        xaxis=dict(gridcolor=PLOT_COLORS["grid_color"], zerolinecolor=PLOT_COLORS["grid_color"]),
+        yaxis=dict(gridcolor=PLOT_COLORS["grid_color"], zerolinecolor=PLOT_COLORS["grid_color"]),
     )
 
     fig.update_xaxes(
@@ -269,7 +288,12 @@ def plot_total_error_rates(df: pd.DataFrame):
         yaxis_title="Average Error Rate",
         hovermode='x unified',
         legend=dict(yanchor="top", y=0.99, xanchor="left", x=1.02),
-        height=500
+        height=500,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        font=dict(color=PLOT_COLORS["text_color"]),
+        xaxis=dict(gridcolor=PLOT_COLORS["grid_color"], zerolinecolor=PLOT_COLORS["grid_color"]),
+        yaxis=dict(gridcolor=PLOT_COLORS["grid_color"], zerolinecolor=PLOT_COLORS["grid_color"]),
     )
 
     fig.update_xaxes(tickformat="%m/%d/%Y")
